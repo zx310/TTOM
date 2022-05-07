@@ -169,5 +169,5 @@ int main(void)
 
 	return EXIT_SUCCESS;
 }
-
+#endif /*example test code*/
 #endif /* TIMINGTIMEOUTMANAGER_H_ */
