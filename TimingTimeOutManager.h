@@ -131,6 +131,7 @@ TTOMStatus_e TTOM_Get_Status(TTOMPrivInfo_s* info);
 
 /*example test code*/
 #if 0
+/*Test1: single thread*/
 #include "TimingTimeOutManager.h"
 #include <stdio.h>
 #include <string.h>
@@ -176,5 +177,85 @@ int main(void)
 
 	return EXIT_SUCCESS;
 }
+/*Test2: multi thread*/
+#include "TimingTimeOutManager.h"
+#include <stdio.h>
+#include <string.h>
+
+#define TIME_OUT	(10) //s
+#define TIMING		(1) //s
+#define TIME_OUT1	(8) //s
+#define TIMING1		(2) //s
+
+static TTOMResult_e timing_call_back_func(void* argv)
+{
+	static int count = 10;
+	int tmp = *(int*)argv;
+	printf("hello [%d]\n", tmp);
+	return --count == 0 ? TTOM_SUEECSS :TTOM_FAILED;
+}
+static TTOMResult_e sueecss_call_back_func(void* argv)
+{
+	int tmp = *(int*)argv;
+	printf("success [%d]\n", tmp);
+	return TTOM_SUEECSS;
+}
+static TTOMResult_e timeout_call_back_func(void* argv)
+{
+	int tmp = *(int*)argv;
+	printf("timeout [%d]\n", tmp);
+	return TTOM_SUEECSS;
+}
+static TTOMResult_e timing_call_back_func1(void* argv)
+{
+	static int count = 5;
+	int tmp = *(int*)argv;
+	printf("hello1 [%d]\n", tmp);
+	return --count == 0 ? TTOM_SUEECSS :TTOM_FAILED;
+}
+static TTOMResult_e sueecss_call_back_func1(void* argv)
+{
+	int tmp = *(int*)argv;
+	printf("success1 [%d]\n", tmp);
+	return TTOM_SUEECSS;
+}
+static TTOMResult_e timeout_call_back_func1(void* argv)
+{
+	int tmp = *(int*)argv;
+	printf("timeout1 [%d]\n", tmp);
+	return TTOM_SUEECSS;
+}
+
+int main(void)
+
+{
+	setbuf(stdout,NULL);
+	TTOMPrivInfo_s info;
+	int tmp = 100;
+	int tmp1 = 1000;
+	memset(&info, 0, sizeof(TTOMPrivInfo_s));
+
+	TTOM_Init(&info, TIME_OUT, TIMING);
+	TTOM_SetTimingCallBackFunc(&info, timing_call_back_func,  (void*)&tmp);
+	TTOM_SetSuccessCallBackFunc(&info, sueecss_call_back_func,  (void*)&tmp);
+	TTOM_SetTimeOutCallBackFunc(&info, timeout_call_back_func,  (void*)&tmp1);
+
+	TTOMPrivInfo_s info1;
+	int tmp11 = 100;
+	int tmp12 = 1000;
+	memset(&info1, 0, sizeof(TTOMPrivInfo_s));
+
+	TTOM_Init(&info1, TIME_OUT1, TIMING1);
+	TTOM_SetTimingCallBackFunc(&info1, timing_call_back_func1,  (void*)&tmp11);
+	TTOM_SetSuccessCallBackFunc(&info1, sueecss_call_back_func1,  (void*)&tmp11);
+	TTOM_SetTimeOutCallBackFunc(&info1, timeout_call_back_func1,  (void*)&tmp12);
+	sleep(1);
+	TTOM_Start(&info);
+	TTOM_Start(&info1);
+	pause();
+
+	return EXIT_SUCCESS;
+}
+
 #endif
 #endif /* TIMINGTIMEOUTMANAGER_H_ */
