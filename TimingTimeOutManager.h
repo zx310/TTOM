@@ -5,6 +5,12 @@
  *      Author: ZhouXin
  */
 
+/**
+ * 	release note:
+ * 	2022.06.27:
+ * 		1. version: 1.0
+ * 		2. delete thread callback function "static status", support multi thread function.
+ */
 #ifndef TIMINGTIMEOUTMANAGER_H_
 #define TIMINGTIMEOUTMANAGER_H_
 
@@ -14,6 +20,7 @@
 #include <pthread.h>
 #include <semaphore.h>
 
+#define TTOM_VERSION		"1.0"
 #define TTOM_TASK_RUNNING	(1)
 
 typedef enum _TaskStatus
@@ -169,5 +176,5 @@ int main(void)
 
 	return EXIT_SUCCESS;
 }
-#endif /*example test code*/
+#endif
 #endif /* TIMINGTIMEOUTMANAGER_H_ */
