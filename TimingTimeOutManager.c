@@ -10,7 +10,7 @@
 
 static void* pthread_func (void* argv)
 {
-	static TTOMStatus_e status = TTOM_STOP;
+	TTOMStatus_e status = TTOM_STOP;
 	TTOMPrivInfo_s *info = (TTOMPrivInfo_s*)argv;
 	unsigned int count = 0;
 
@@ -86,9 +86,10 @@ void TTOM_Init(TTOMPrivInfo_s* info,  unsigned int time_out, unsigned int timing
 		info->timing_call_back_argv = NULL;
 		info->time_out_call_back_argv = NULL;
 		info->success_call_back_argv = NULL;
+
 		sem_init (&info->s1, 0, 0);
 
-		ret = pthread_create (&pt, NULL, (void*)pthread_func, (void*)info);
+		ret = pthread_create (&pt, NULL, pthread_func, (void*)info);
 		if (ret != 0)
 		{
 			info->task_running = !TTOM_TASK_RUNNING;
